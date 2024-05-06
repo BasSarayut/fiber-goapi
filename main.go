@@ -1,8 +1,6 @@
 package main
 
 import (
-	"strconv"
-
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -24,39 +22,10 @@ func main() {
 
 	app.Get("/books", getBooks)
 	app.Get("/books/:id", getBook)
-	app.Get("/books/:Title", getAuthor)
+	app.Post("/books", postBook)
+	app.Put("/books/:id", PutBook)
+	app.Delete("/books/:id", DeleteBook)
 
 	app.Listen(":8080")
 
-}
-
-func getBooks(c *fiber.Ctx) error {
-	return c.JSON(books)
-}
-
-func getBook(c *fiber.Ctx) error {
-	bookId, err := strconv.Atoi(c.Params("id"))
-
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
-
-	}
-
-	for _, book := range books {
-		if book.ID == bookId {
-			return c.JSON(book)
-		}
-	}
-	return c.Status(fiber.StatusNotFound).SendString("Book not found")
-}
-
-func getAuthor(c *fiber.Ctx) error {
-	author := c.Params("Author")
-
-	for _, book := range books {
-		if book.Author == author {
-			return c.JSON(book)
-		}
-	}
-	return c.Status(fiber.StatusNotFound).SendString("Book not found")
 }
