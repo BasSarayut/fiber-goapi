@@ -32,6 +32,8 @@ func getBook(c *fiber.Ctx) error {
 
 func postBook(c *fiber.Ctx) error {
 	book := new(Book)
+	author := new(Author)
+	publisher := new(Publisher)
 
 	if err := c.BodyParser(book); err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString(err.Error())
@@ -39,6 +41,10 @@ func postBook(c *fiber.Ctx) error {
 
 	book.ID = len(books) + 1
 	books = append(books, *book)
+	author.ID = len(authors) + 1
+	authors = append(authors, book.Author)
+	publisher.ID = len(publishers) + 1
+	publishers = append(publishers, book.Publisher)
 
 	return c.JSON(book)
 }
@@ -58,10 +64,7 @@ func PutBook(c *fiber.Ctx) error {
 	for i, book := range books {
 		if book.ID == id {
 			books[i].Title = bookUpdate.Title
-			books[i].Author = bookUpdate.Author
-			books[i].Date = bookUpdate.Date
-			//books[i] = book
-
+			books[i].ID = bookUpdate.ID
 			return c.JSON(book)
 		}
 	}
